@@ -1,7 +1,7 @@
 import { getServerUrl, getCookie } from '../utils/function.js';
 
 export const userLogin = async (email, password) => {
-    const result = await fetch(`${getServerUrl()}/users/login`, {
+    const result = await fetch(`${getServerUrl()}/auth/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -16,7 +16,7 @@ export const userLogin = async (email, password) => {
 
 export const checkEmail = async email => {
     const result = fetch(
-        `${getServerUrl()}/users/nickname/check?nickname=${email}`,
+        `${getServerUrl()}/user/check/email?email=${email}`,
         {
             method: 'GET',
             headers: {

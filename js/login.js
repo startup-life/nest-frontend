@@ -8,6 +8,7 @@ import {
 import { userLogin } from '../api/loginRequest.js';
 
 const HTTP_OK = 200;
+const HTTP_CREATED = 201;
 const MAX_PASSWORD_LENGTH = 8;
 
 const loginData = {
@@ -33,7 +34,8 @@ const loginClick = async () => {
     }
 
     const result = await response.json();
-    if (result.status !== HTTP_OK) {
+
+    if (response.status !== HTTP_CREATED) {
         updateHelperText(
             helperTextElement,
             '*입력하신 계정 정보가 정확하지 않았습니다.',
@@ -42,8 +44,7 @@ const loginClick = async () => {
     }
     updateHelperText(helperTextElement);
 
-    setCookie('session', result.data.sessionId, 14);
-    setCookie('userId', result.data.userId, 14);
+    setCookie('accessToken', result.accessToken, 14);
     location.href = '/html/index.html';
 };
 
