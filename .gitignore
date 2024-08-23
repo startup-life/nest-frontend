@@ -1,0 +1,11 @@
+node_modules/
+
+*.log
+
+.DS_Store
+
+.env
+
+.idea/
+
+web_project/backend/public/image/
