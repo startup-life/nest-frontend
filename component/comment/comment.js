@@ -2,8 +2,9 @@ import { getServerUrl, padTo2Digits } from '../../utils/function.js';
 import Dialog from '../dialog/dialog.js';
 import { deleteComment, updateComment } from '../../api/commentRequest.js';
 
-const DEFAULT_PROFILE_IMAGE = '/public/image/profile/default.jpg';
-const HTTP_OK = 200;
+const DEFAULT_PROFILE_IMAGE = '/image/profile/default.jpg';
+const HTTP_CREATED = 201;
+const HTTP_END = 204;
 
 const CommentItem = (data, writerId, postId, commentId) => {
     const CommentDelete = () => {
@@ -17,8 +18,7 @@ const CommentItem = (data, writerId, postId, commentId) => {
                     return;
                 }
 
-                const responseData = await response.json();
-                if (responseData.status === HTTP_OK)
+                if (response.status === HTTP_END)
                     location.href = '/html/board.html?id=' + postId;
             },
         );
@@ -62,7 +62,7 @@ const CommentItem = (data, writerId, postId, commentId) => {
             };
 
             const response = await updateComment(postId, commentId, sendData);
-            if (!response.ok)
+            if (!response.ok || response.status !== HTTP_CREATED)
                 return Dialog('수정 실패', '댓글 수정에 실패하였습니다.');
 
             location.href = '/html/board.html?id=' + postId;

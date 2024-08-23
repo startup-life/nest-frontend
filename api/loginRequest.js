@@ -14,9 +14,9 @@ export const userLogin = async (email, password) => {
     return result;
 };
 
-export const checkEmail = async email => {
+export const checkNickname = async nickname => {
     const result = fetch(
-        `${getServerUrl()}/user/check/email?email=${email}`,
+        `${getServerUrl()}/user/check/nickname?nickname=${nickname}`,
         {
             method: 'GET',
             headers: {
