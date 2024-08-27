@@ -1,12 +1,11 @@
 import { getServerUrl, getCookie } from '../utils/function.js';
 
 export const changePassword = async (userId, password) => {
-    const result = fetch(`${getServerUrl()}/users/${userId}/password`, {
+    const result = fetch(`${getServerUrl()}/user/${userId}/password`, {
         method: 'PATCH',
         headers: {
             'Content-Type': 'application/json',
-            session: getCookie('session'),
-            userid: userId,
+            'Authorization': `Bearer ${getCookie('accessToken')}`,
         },
         body: JSON.stringify({
             password,

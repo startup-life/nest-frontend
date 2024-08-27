@@ -1,6 +1,6 @@
 import { deleteCookie, getCookie, getServerUrl } from '../../utils/function.js';
 
-const DEFAULT_PROFILE_IMAGE = '/public/image/profile/default.jpg';
+const DEFAULT_PROFILE_IMAGE = '/image/profile/default.jpg';
 
 const headerDropdownMenu = () => {
     const wrap = document.createElement('div');
@@ -16,8 +16,7 @@ const headerDropdownMenu = () => {
     modifyInfoLink.href = '/html/modifyInfo.html';
     modifyPasswordLink.href = '/html/modifyPassword.html';
     logoutLink.addEventListener('click', () => {
-        deleteCookie('session');
-        deleteCookie('userId');
+        deleteCookie('accessToken');
         location.href = '/html/login.html';
     });
 
@@ -58,7 +57,7 @@ const Header = (
     }
 
     if (profileImage) {
-        if (getCookie('session')) {
+        if (getCookie('accessToken')) {
             rightBtnElement = document.createElement('div');
             rightBtnElement.classList.add('profile');
 
