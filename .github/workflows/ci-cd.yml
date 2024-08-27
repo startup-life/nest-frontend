@@ -2,33 +2,33 @@
 name: nest-frontend CI/CD
 
 on:
-  push:
-    branches:
-      - main
-      - develop # test branch
-  pull_request:
-    branches:
-      - main
+    push:
+        branches:
+            - main
+            - develop # test branch
+    pull_request:
+        branches:
+            - main
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x, 20.x]
+        strategy:
+            matrix:
+                node-version: [16.x, 20.x]
 
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: ${{ matrix.node-version }}
+            - name: Set up Node.js
+              uses: actions/setup-node@v2
+              with:
+                  node-version: ${{ matrix.node-version }}
 
-      - name: Install dependencies
-        run: npm install
+            - name: Install dependencies
+              run: npm install
 
-      #- name: Run tests
-      #  run: npm test
+            #- name: Run tests
+            #  run: npm test
