@@ -1,4 +1,4 @@
-import { changePassword } from '../api/modifyPasswordRequest.js';
+import changePassword from '../api/modifyPasswordRequest.js';
 import Dialog from '../component/dialog/dialog.js';
 import Header from '../component/header/header.js';
 import {
@@ -14,7 +14,7 @@ const button = document.querySelector('#signupBtn');
 const DEFAULT_PROFILE_IMAGE = '/image/profile/default.jpg';
 const HTTP_OK = 200;
 
-const data = await authCheck();
+const data = authCheck();
 const userId = data.userId;
 const profileImage =
     data.profileImagePath === undefined
@@ -44,10 +44,10 @@ const blurEventHandler = async (event, uid) => {
         const value = event.target.value;
         const isValidPassword = validPassword(value);
         const helperElement = document.querySelector(
-            `.inputBox p[name="${uid}"]`,
+            `.inputBox p[name="${uid}"]`
         );
         const helperElementCheck = document.querySelector(
-            `.inputBox p[name="pwck"]`,
+            `.inputBox p[name="pwck"]`
         );
 
         if (!helperElement) return;
@@ -66,7 +66,7 @@ const blurEventHandler = async (event, uid) => {
     } else if (uid == 'pwck') {
         const value = event.target.value;
         const helperElement = document.querySelector(
-            `.inputBox p[name="${uid}"]`,
+            `.inputBox p[name="${uid}"]`
         );
         // pw 입력란의 현재 값
         const password = modifyData.password;
@@ -86,10 +86,12 @@ const blurEventHandler = async (event, uid) => {
 
 const addEventForInputElements = () => {
     const InputElement = document.querySelectorAll('input');
-    InputElement.forEach(element => {
+    InputElement.forEach((element) => {
         const id = element.id;
 
-        element.addEventListener('input', event => blurEventHandler(event, id));
+        element.addEventListener('input', (event) =>
+            blurEventHandler(event, id)
+        );
     });
 };
 
