@@ -74,7 +74,7 @@ const changeEventHandler = async (event, uid) => {
         if (!file) return;
 
         const helperElement = document.querySelector(
-            `.inputBox p[name="${uid}"]`,
+            `.inputBox p[name="${uid}"]`
         );
         helperElement.textContent = '';
     }
@@ -86,7 +86,7 @@ const inputEventHandler = async (event, uid) => {
         const value = event.target.value;
         const isValidEmail = validEmail(value);
         const helperElement = document.querySelector(
-            `.inputBox p[name="${uid}"]`,
+            `.inputBox p[name="${uid}"]`
         );
         let isComplete = false;
 
@@ -116,10 +116,10 @@ const inputEventHandler = async (event, uid) => {
         const value = event.target.value;
         const isValidPassword = validPassword(value);
         const helperElement = document.querySelector(
-            `.inputBox p[name="${uid}"]`,
+            `.inputBox p[name="${uid}"]`
         );
         const helperElementCheck = document.querySelector(
-            `.inputBox p[name="pwck"]`,
+            `.inputBox p[name="pwck"]`
         );
 
         if (!helperElement) return;
@@ -138,7 +138,7 @@ const inputEventHandler = async (event, uid) => {
     } else if (uid == 'pwck') {
         const value = event.target.value;
         const helperElement = document.querySelector(
-            `.inputBox p[name="${uid}"]`,
+            `.inputBox p[name="${uid}"]`
         );
         // pw 입력란의 현재 값
         const password = signupData.password;
@@ -155,7 +155,7 @@ const inputEventHandler = async (event, uid) => {
         const value = event.target.value;
         const isValidNickname = validNickname(value);
         const helperElement = document.querySelector(
-            `.inputBox p[name="${uid}"]`,
+            `.inputBox p[name="${uid}"]`
         );
         let isComplete = false;
 
@@ -192,15 +192,15 @@ const inputEventHandler = async (event, uid) => {
 
 const addEventForInputElements = () => {
     const InputElement = document.querySelectorAll('input');
-    InputElement.forEach(element => {
+    InputElement.forEach((element) => {
         const id = element.id;
         if (id === 'profile') {
-            element.addEventListener('change', event =>
-                changeEventHandler(event, id),
+            element.addEventListener('change', (event) =>
+                changeEventHandler(event, id)
             );
         } else {
-            element.addEventListener('input', event =>
-                inputEventHandler(event, id),
+            element.addEventListener('input', (event) =>
+                inputEventHandler(event, id)
             );
         }
     });
@@ -230,7 +230,7 @@ const observeSignupData = () => {
 const uploadProfileImage = () => {
     document
         .getElementById('profile')
-        .addEventListener('change', async event => {
+        .addEventListener('change', async (event) => {
             const file = event.target.files[0];
             if (!file) {
                 console.log('파일이 선택되지 않았습니다.');

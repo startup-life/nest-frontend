@@ -3,10 +3,10 @@ import Dialog from '../component/dialog/dialog.js';
 import Header from '../component/header/header.js';
 import {
     authCheck,
-    getCookie,
     getServerUrl,
     prependChild,
-    padTo2Digits, serverSessionCheck,
+    padTo2Digits,
+    serverSessionCheck,
 } from '../utils/function.js';
 import {
     getPost,
@@ -22,12 +22,12 @@ const HTTP_OK = 200;
 const HTTP_CREATED = 201;
 const HTTP_END = 204;
 
-const getQueryString = name => {
+const getQueryString = (name) => {
     const urlParams = new URLSearchParams(window.location.search);
     return urlParams.get(name);
 };
 
-const getBoardDetail = async postId => {
+const getBoardDetail = async (postId) => {
     const response = await getPost(postId);
     if (!response.ok || response.status !== HTTP_OK)
         return new Error('게시글 정보를 가져오는데 실패하였습니다.');
@@ -36,7 +36,7 @@ const getBoardDetail = async postId => {
     return data;
 };
 
-const setBoardDetail = data => {
+const setBoardDetail = (data) => {
     // 헤드 정보
     const titleElement = document.querySelector('.title');
     const createdAtElement = document.querySelector('.createdAt');
@@ -70,13 +70,15 @@ const setBoardDetail = data => {
     // hits에 K, M 이 포함되어 있을 경우 그냥 출력
     // 포함되어 있지 않다면 + 1
     viewCountElement.textContent = data.hits;
-    /*if (data.hits.includes('K') || data.hits.includes('M')) {
+    /*
+    if (data.hits.includes('K') || data.hits.includes('M')) {
         viewCountElement.textContent = data.hits;
     } else {
         viewCountElement.textContent = (
             parseInt(data.hits, 10) + 1
         ).toLocaleString();
-    }*/
+    }
+    */
 
     const commentCountElement = document.querySelector('.commentCount h3');
     // commentCountElement.textContent = data.comment_count.toLocaleString();
@@ -101,7 +103,7 @@ const setBoardModify = async (data, myInfo) => {
                     } else {
                         Dialog('삭제 실패', '게시글 삭제에 실패하였습니다.');
                     }
-                },
+                }
             );
         });
 
@@ -112,7 +114,7 @@ const setBoardModify = async (data, myInfo) => {
     }
 };
 
-const getBoardComment = async id => {
+const getBoardComment = async (id) => {
     const response = await getComments(id);
     if (!response.ok) return [];
     const data = await response.json();
@@ -123,12 +125,12 @@ const getBoardComment = async id => {
 const setBoardComment = (data, myInfo) => {
     const commentListElement = document.querySelector('.commentList');
     if (commentListElement) {
-        data.map(event => {
+        data.map((event) => {
             const item = CommentItem(
                 event,
                 myInfo.userId,
                 event.post_id,
-                event.comment_id,
+                event.comment_id
             );
             commentListElement.appendChild(item);
         });
@@ -150,14 +152,14 @@ const addComment = async () => {
 
 const inputComment = async () => {
     const textareaElement = document.querySelector(
-        '.commentInputWrap textarea',
+        '.commentInputWrap textarea'
     );
     const commentBtnElement = document.querySelector('.commentInputBtn');
 
     if (textareaElement.value.length > MAX_COMMENT_LENGTH) {
         textareaElement.value = textareaElement.value.substring(
             0,
-            MAX_COMMENT_LENGTH,
+            MAX_COMMENT_LENGTH
         );
     }
     if (textareaElement.value === '') {
@@ -180,7 +182,7 @@ const init = async () => {
         const myInfo = myInfoData;
         const commentBtnElement = document.querySelector('.commentInputBtn');
         const textareaElement = document.querySelector(
-            '.commentInputWrap textarea',
+            '.commentInputWrap textarea'
         );
         textareaElement.addEventListener('input', inputComment);
         commentBtnElement.addEventListener('click', addComment);
@@ -206,7 +208,7 @@ const init = async () => {
         }
         setBoardDetail(pageData);
 
-        getBoardComment(pageId).then(data => setBoardComment(data, myInfo));
+        getBoardComment(pageId).then((data) => setBoardComment(data, myInfo));
     } catch (error) {
         console.error(error);
     }
