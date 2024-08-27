@@ -1,6 +1,6 @@
 import { getServerUrl } from '../utils/function.js';
 
-export const userSignup = async data => {
+export const userSignup = async (data) => {
     const result = await fetch(`${getServerUrl()}/users/signup`, {
         method: 'POST',
         headers: {
@@ -11,7 +11,7 @@ export const userSignup = async data => {
     return result;
 };
 
-export const checkEmail = async email => {
+export const checkEmail = async (email) => {
     const result = await fetch(
         `${getServerUrl()}/users/email/check?email=${email}`,
         {
@@ -19,12 +19,12 @@ export const checkEmail = async email => {
             headers: {
                 'Content-Type': 'application/json',
             },
-        },
+        }
     );
     return result;
 };
 
-export const checkNickname = async nickname => {
+export const checkNickname = async (nickname) => {
     const result = await fetch(
         `${getServerUrl()}/users/nickname/check?nickname=${nickname}`,
         {
@@ -32,12 +32,12 @@ export const checkNickname = async nickname => {
             headers: {
                 'Content-Type': 'application/json',
             },
-        },
+        }
     );
     return result;
 };
 
-export const fileUpload = async file => {
+export const fileUpload = async (file) => {
     const result = await fetch(`${getServerUrl()}/upload`, {
         method: 'POST',
         body: file,
