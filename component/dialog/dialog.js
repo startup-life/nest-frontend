@@ -8,7 +8,7 @@ const Dialog = (title, description, submitCallBack, type = 'alert') => {
     const wrap = document.createElement('div');
     const titleWrap = document.createElement('h2');
     const descriptionWrap = document.createElement(
-        type == 'alert' ? 'p' : 'textarea',
+        type == 'alert' ? 'p' : 'textarea'
     );
 
     const buttonWrap = document.createElement('div');

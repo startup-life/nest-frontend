@@ -1,6 +1,6 @@
 import { deleteCookie, getCookie, getServerUrl } from '../../utils/function.js';
 
-const DEFAULT_PROFILE_IMAGE = '/public/image/profile/default.jpg';
+const DEFAULT_PROFILE_IMAGE = '/image/profile/default.jpg';
 
 const headerDropdownMenu = () => {
     const wrap = document.createElement('div');
@@ -16,8 +16,7 @@ const headerDropdownMenu = () => {
     modifyInfoLink.href = '/html/modifyInfo.html';
     modifyPasswordLink.href = '/html/modifyPassword.html';
     logoutLink.addEventListener('click', () => {
-        deleteCookie('session');
-        deleteCookie('userId');
+        deleteCookie('accessToken');
         location.href = '/html/login.html';
     });
 
@@ -36,12 +35,10 @@ const headerDropdownMenu = () => {
 const Header = (
     title,
     leftBtn = 0,
-    profileImage = `${getServerUrl()}${DEFAULT_PROFILE_IMAGE}`,
+    profileImage = `${getServerUrl()}${DEFAULT_PROFILE_IMAGE}`
 ) => {
     let leftBtnElement;
     let rightBtnElement;
-    let headerElement;
-    let h1Element;
 
     if (leftBtn == 1 || leftBtn == 2) {
         leftBtnElement = document.createElement('img');
@@ -52,13 +49,13 @@ const Header = (
         } else {
             leftBtnElement.addEventListener(
                 'click',
-                () => (location.href = '/'),
+                () => (location.href = '/')
             );
         }
     }
 
     if (profileImage) {
-        if (getCookie('session')) {
+        if (getCookie('accessToken')) {
             rightBtnElement = document.createElement('div');
             rightBtnElement.classList.add('profile');
 
@@ -80,10 +77,10 @@ const Header = (
         }
     }
 
-    h1Element = document.createElement('h1');
+    const h1Element = document.createElement('h1');
     h1Element.textContent = title;
 
-    headerElement = document.createElement('header');
+    const headerElement = document.createElement('header');
 
     if (leftBtnElement) headerElement.appendChild(leftBtnElement);
     headerElement.appendChild(h1Element);
@@ -92,7 +89,7 @@ const Header = (
     return headerElement;
 };
 
-window.addEventListener('click', e => {
+window.addEventListener('click', () => {
     const dropMenu = document.querySelector('.drop');
     if (dropMenu && !dropMenu.classList.contains('none')) {
         dropMenu.classList.add('none');

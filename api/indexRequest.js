@@ -1,15 +1,16 @@
 import { getServerUrl, getCookie } from '../utils/function.js';
 
-export const getPosts = (offset, limit) => {
+const getPosts = (offset, limit) => {
     const result = fetch(
-        `${getServerUrl()}/posts?offset=${offset}&limit=${limit}`,
+        `${getServerUrl()}/post?offset=${offset}&limit=${limit}`,
         {
             headers: {
-                session: getCookie('session'),
-                userId: getCookie('userId'),
+                Authorization: `Bearer ${getCookie('accessToken')}`,
             },
             noCORS: true,
-        },
+        }
     );
     return result;
 };
+
+export default getPosts;
