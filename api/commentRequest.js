@@ -6,9 +6,9 @@ export const deleteComment = (postId, commentId) => {
         {
             method: 'DELETE',
             headers: {
-                'Authorization': `Bearer ${getCookie('accessToken')}`,
+                Authorization: `Bearer ${getCookie('accessToken')}`,
             },
-        },
+        }
     );
     return result;
 };
@@ -20,10 +20,10 @@ export const updateComment = (postId, commentId, commentContent) => {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getCookie('accessToken')}`,
+                Authorization: `Bearer ${getCookie('accessToken')}`,
             },
             body: JSON.stringify(commentContent),
-        },
+        }
     );
     return result;
 };

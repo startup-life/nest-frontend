@@ -1,7 +1,11 @@
 import BoardItem from '../component/board/boardItem.js';
 import Header from '../component/header/header.js';
-import {authCheck, getServerUrl, prependChild, serverSessionCheck} from '../utils/function.js';
-import { getPosts } from '../api/indexRequest.js';
+import {
+    getServerUrl,
+    prependChild,
+    serverSessionCheck,
+} from '../utils/function.js';
+import getPosts from '../api/indexRequest.js';
 
 const DEFAULT_PROFILE_IMAGE = '/image/profile/default.jpg';
 const HTTP_NOT_AUTHORIZED = 401;
@@ -20,11 +24,11 @@ const getBoardItem = async (offset = 0, limit = 5) => {
     return data;
 };
 
-const setBoardItem = boardData => {
+const setBoardItem = (boardData) => {
     const boardList = document.querySelector('.boardList');
     if (boardList && boardData) {
         const itemsHtml = boardData
-            .map(data =>
+            .map((data) =>
                 BoardItem(
                     data.postId,
                     data.createdAt,
@@ -33,8 +37,8 @@ const setBoardItem = boardData => {
                     data.profileImagePath,
                     data.nickname,
                     data.commentCount,
-                    data.like,
-                ),
+                    data.like
+                )
             )
             .join('');
         boardList.innerHTML += ` ${itemsHtml}`;
@@ -43,9 +47,9 @@ const setBoardItem = boardData => {
 
 // 스크롤 이벤트 추가
 const addInfinityScrollEvent = () => {
-    let offset = INITIAL_OFFSET,
-        isEnd = false,
-        isProcessing = false;
+    let offset = INITIAL_OFFSET;
+    let isEnd = false;
+    let isProcessing = false;
 
     window.addEventListener('scroll', async () => {
         const hasScrolledToThreshold =
@@ -81,12 +85,11 @@ const init = async () => {
             return;
         }
 
-        const profileImagePath =
-            data.profileImagePath ?? DEFAULT_PROFILE_IMAGE;
+        const profileImagePath = data.profileImagePath ?? DEFAULT_PROFILE_IMAGE;
         const fullProfileImagePath = `${getServerUrl()}${profileImagePath}`;
         prependChild(
             document.body,
-            Header('Community', 0, fullProfileImagePath),
+            Header('Community', 0, fullProfileImagePath)
         );
 
         const boardList = await getBoardItem();

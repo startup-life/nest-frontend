@@ -8,7 +8,7 @@ const BoardItem = (
     imgUrl,
     writer,
     commentCount,
-    like,
+    like
 ) => {
     // 파라미터 값이 없으면 리턴
     if (

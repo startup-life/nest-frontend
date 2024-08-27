@@ -1,9 +1,18 @@
 import Dialog from '../component/dialog/dialog.js';
 import Header from '../component/header/header.js';
-import {authCheck, getQueryString, getServerUrl, prependChild,} from '../utils/function.js';
-import {createPost, fileUpload, getBoardItem, updatePost,} from '../api/board-writeRequest.js';
+import {
+    authCheck,
+    getQueryString,
+    getServerUrl,
+    prependChild,
+} from '../utils/function.js';
+import {
+    createPost,
+    fileUpload,
+    getBoardItem,
+    updatePost,
+} from '../api/board-writeRequest.js';
 
-const HTTP_OK = 200;
 const HTTP_CREATED = 201;
 
 const MAX_TITLE_LENGTH = 26;
@@ -15,7 +24,7 @@ const contentInput = document.querySelector('#content');
 const imageInput = document.querySelector('#image');
 const imagePreviewText = document.getElementById('imagePreviewText');
 const contentHelpElement = document.querySelector(
-    '.inputBox p[name="content"]',
+    '.inputBox p[name="content"]'
 );
 
 const boardWrite = {
@@ -146,7 +155,7 @@ const changeEventHandler = async (event, uid) => {
     observeSignupData();
 };
 // 수정모드시 사용하는 게시글 단건 정보 가져오기
-const getBoardModifyData = async postId => {
+const getBoardModifyData = async (postId) => {
     const response = await getBoardItem(postId);
     if (!response.ok) throw new Error('서버 응답 오류');
 
@@ -164,31 +173,30 @@ const checkModifyMode = () => {
 // 이벤트 등록
 const addEvent = () => {
     submitButton.addEventListener('click', addBoard);
-    titleInput.addEventListener('input', event =>
-        changeEventHandler(event, 'title'),
+    titleInput.addEventListener('input', (event) =>
+        changeEventHandler(event, 'title')
     );
-    contentInput.addEventListener('input', event =>
-        changeEventHandler(event, 'content'),
+    contentInput.addEventListener('input', (event) =>
+        changeEventHandler(event, 'content')
     );
-    imageInput.addEventListener('change', event =>
-        changeEventHandler(event, 'image'),
+    imageInput.addEventListener('change', (event) =>
+        changeEventHandler(event, 'image')
     );
     if (imagePreviewText !== null) {
-        imagePreviewText.addEventListener('click', event =>
-            changeEventHandler(event, 'imagePreviewText'),
+        imagePreviewText.addEventListener('click', (event) =>
+            changeEventHandler(event, 'imagePreviewText')
         );
     }
 };
 
-const setModifyData = data => {
+const setModifyData = (data) => {
     titleInput.value = data.postTitle;
     contentInput.value = data.postContent;
 
     if (data.attachFilePath) {
         // filePath에서 파일 이름만 추출하여 표시
         const fileName = data.attachFilePath.split('/').pop();
-        imagePreviewText.innerHTML =
-            fileName + `<span class="deleteFile">X</span>`;
+        imagePreviewText.innerHTML = `${fileName}<span class="deleteFile">X</span>`;
         imagePreviewText.style.display = 'block';
         localStorage.setItem('postFilePath', data.attachFilePath);
 
@@ -199,7 +207,7 @@ const setModifyData = data => {
             // 추출된 파일명
             fileName,
             // MIME 타입 지정, 실제 이미지 타입에 맞게 조정 필요
-            { type: '' },
+            { type: '' }
         );
 
         const dataTransfer = new DataTransfer();

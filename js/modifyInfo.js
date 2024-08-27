@@ -1,13 +1,13 @@
-import {checkNickname} from '../api/loginRequest.js';
+import { checkNickname } from '../api/loginRequest.js';
 import Dialog from '../component/dialog/dialog.js';
 import Header from '../component/header/header.js';
 import {
     authCheck,
     prependChild,
     getServerUrl,
-    getCookie,
     deleteCookie,
-    validNickname, getUserIdFromJWT,
+    validNickname,
+    getUserIdFromJWT,
 } from '../utils/function.js';
 import { userModify, userDelete } from '../api/modifyInfoRequest.js';
 
@@ -16,12 +16,12 @@ const nicknameInputElement = document.querySelector('#nickname');
 const profileInputElement = document.querySelector('#profile');
 const withdrawBtnElement = document.querySelector('#withdrawBtn');
 const nicknameHelpElement = document.querySelector(
-    '.inputBox p[name="nickname"]',
+    '.inputBox p[name="nickname"]'
 );
-const resultElement = document.querySelector('.inputBox p[name="result"]');
+// const resultElement = document.querySelector('.inputBox p[name="result"]');
 const modifyBtnElement = document.querySelector('#signupBtn');
 const profilePreview = document.querySelector('#profilePreview');
-const authData = await authCheck();
+const authData = authCheck();
 const changeData = {
     nickname: authData.nickname,
     profileImagePath: authData.profileImagePath,
@@ -32,7 +32,7 @@ const HTTP_OK = 200;
 const HTTP_CREATED = 201;
 const HTTP_END = 204;
 
-const setData = data => {
+const setData = (data) => {
     if (
         data.profileImagePath === DEFAULT_PROFILE_IMAGE ||
         data.profileImagePath === null
@@ -48,7 +48,7 @@ const setData = data => {
         const profileImage = new File(
             [`${getServerUrl()}${profileImagePath}`],
             fileName,
-            { type: '' },
+            { type: '' }
         );
 
         const dataTransfer = new DataTransfer();
@@ -98,7 +98,7 @@ const changeEventHandler = async (event, uid) => {
                 button.style.backgroundColor = '#ACA0EB';
                 return;
             }
-            if (responseData === true){
+            if (responseData === true) {
                 helperElement.textContent = '*중복된 닉네임 입니다.';
                 button.disabled = true;
                 button.style.backgroundColor = '#ACA0EB';
@@ -123,12 +123,16 @@ const changeEventHandler = async (event, uid) => {
 
             // 파일 업로드를 위한 POST 요청 실행
             try {
-                const response = await fetch(`${getServerUrl()}/upload/profile`, {
-                    method: 'POST',
-                    body: formData,
-                });
+                const response = await fetch(
+                    `${getServerUrl()}/upload/profile`,
+                    {
+                        method: 'POST',
+                        body: formData,
+                    }
+                );
 
-                if (!response.ok || response.status !== HTTP_CREATED) throw new Error('서버 응답 오류');
+                if (!response.ok || response.status !== HTTP_CREATED)
+                    throw new Error('서버 응답 오류');
 
                 const result = await response.text();
                 console.log(result);
@@ -183,16 +187,16 @@ const deleteAccount = async () => {
     Dialog(
         '회원탈퇴 하시겠습니까?',
         '작성된 게시글과 댓글은 삭제 됩니다.',
-        callback,
+        callback
     );
 };
 
 const addEvent = () => {
-    nicknameInputElement.addEventListener('change', event =>
-        changeEventHandler(event, 'nickname'),
+    nicknameInputElement.addEventListener('change', (event) =>
+        changeEventHandler(event, 'nickname')
     );
-    profileInputElement.addEventListener('change', event =>
-        changeEventHandler(event, 'profile'),
+    profileInputElement.addEventListener('change', (event) =>
+        changeEventHandler(event, 'profile')
     );
     modifyBtnElement.addEventListener('click', async () => sendModifyData());
     withdrawBtnElement.addEventListener('click', async () => deleteAccount());
@@ -227,7 +231,7 @@ const showToast = (message, duration = 3000, callback = null) => {
     }, duration);
 };
 
-const saveToastMessage = message => {
+const saveToastMessage = (message) => {
     sessionStorage.setItem('toastMessage', message);
 };
 
