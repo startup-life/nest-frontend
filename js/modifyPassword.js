@@ -11,15 +11,15 @@ import {
 
 const button = document.querySelector('#signupBtn');
 
-const DEFAULT_PROFILE_IMAGE = '/public/image/profile/default.jpg';
-const HTTP_CREATED = 201;
+const DEFAULT_PROFILE_IMAGE = '/image/profile/default.jpg';
+const HTTP_OK = 200;
 
 const data = await authCheck();
-const userId = data.data.userId;
+const userId = data.userId;
 const profileImage =
-    data.data.profileImagePath === undefined
+    data.profileImagePath === undefined
         ? `${getServerUrl()}${DEFAULT_PROFILE_IMAGE}`
-        : `${getServerUrl()}${data.data.profileImagePath}`;
+        : `${getServerUrl()}${data.profileImagePath}`;
 
 const modifyData = {
     password: '',
@@ -97,11 +97,9 @@ const modifyPassword = async () => {
     const { password } = modifyData;
 
     const response = await changePassword(userId, password);
-    const responseData = await response.json();
 
-    if (responseData.status == HTTP_CREATED) {
-        deleteCookie('session');
-        deleteCookie('userId');
+    if (response.status === HTTP_OK) {
+        deleteCookie('accessToken');
         localStorage.clear();
         location.href = '/html/login.html';
     } else {

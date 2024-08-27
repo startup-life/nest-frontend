@@ -1,4 +1,4 @@
-import Dialog from '../component/dialog/dialog.js';
+const HTTP_OK = 200;
 
 export const getServerUrl = () => {
     const host = window.location.hostname;
@@ -38,40 +38,49 @@ export const deleteCookie = cookie_name => {
 };
 
 export const serverSessionCheck = async () => {
-    const res = await fetch(`${getServerUrl()}/auth/check`, {
-        method: 'GET',
-        headers: {
-            session: getCookie('session'),
-            userId: getCookie('userId'),
-        },
-    });
-    const data = await res.json();
-    return data;
+    try {
+        const response = await fetch(`${getServerUrl()}/auth/check`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${getCookie('accessToken')}`,
+            }
+        });
+        return response;
+    } catch (error) {
+        console.error(error);
+        deleteCookie('accessToken');
+        location.href = '/html/login.html';
+    }
 };
 
 export const authCheck = async () => {
-    const HTTP_OK = 200;
-    const session = getCookie('session');
-    if (session === undefined) {
-        // Dialog('로그인이 필요합니다.', '로그인 페이지로 이동합니다.');
+    try {
+        const accessToken = getCookie('accessToken');
+        if (!accessToken) {
+            deleteCookie('accessToken');
+            location.href = '/html/login.html';
+        }
+
+        const response = await serverSessionCheck();
+        const data = await response.json();
+
+        if (!response || response.status !== HTTP_OK) {
+            deleteCookie('accessToken');
+            location.href = '/html/login.html';
+        }
+        return data;
+    } catch (error) {
+        console.error(error);
+        deleteCookie('accessToken');
         location.href = '/html/login.html';
     }
-
-    const data = await serverSessionCheck();
-
-    if (!data || data.status !== HTTP_OK) {
-        deleteCookie('session');
-        deleteCookie('userId');
-        // Dialog('로그인이 필요합니다.', '로그인 페이지로 이동합니다.');
-        location.href = '/html/login.html';
-    }
-    return data;
 };
 
 export const authCheckReverse = async () => {
-    const session = getCookie('session');
-    if (session) {
-        const data = await serverSessionCheck();
+    const accessToken = getCookie('accessToken');
+    if (accessToken) {
+        const response = await serverSessionCheck();
+        const data = await response.json();
         if (data) {
             location.href = '/';
         }
@@ -145,4 +154,27 @@ export const getQueryString = param => {
 
 export const padTo2Digits = number => {
     return number.toString().padStart(2, '0');
+};
+
+const base64UrlDecode = (str) => {
+    // Base64Url 인코딩을 일반 Base64 인코딩으로 변환
+    let base64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    // 패딩 처리
+    while (base64.length % 4) {
+        base64 += '=';
+    }
+    // Base64 디코딩
+    const decoded = atob(base64);
+    return JSON.parse(decoded);
+};
+
+export const getUserIdFromJWT = () => {
+    const accessToken = getCookie('accessToken');
+    if (!accessToken) {
+        console.error('No accessToken found');
+        return null;
+    }
+    // JWT의 페이로드 디코딩
+    const payload = base64UrlDecode(accessToken.split('.')[1]);
+    return payload.userId;
 };
