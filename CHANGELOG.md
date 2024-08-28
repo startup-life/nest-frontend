@@ -1,5 +1,19 @@
 # CHANGELOG
 
+## [1.1.0](https://github.com/startup-life/nest-frontend/compare/v1.0.0...v1.1.0) (2024-08-28)
+
+### 🚀 NEW FEATURES
+
+* dotenv 패키지 추가 및 포트 설정 env로 이동 ([8fa3c94](https://github.com/startup-life/nest-frontend/commit/8fa3c948ba562a3985192f0cd31da22ac0da146a))
+
+### 🐛 BUG FIXES
+
+* 회원가입 부분 코드 리팩토링 ([e214b13](https://github.com/startup-life/nest-frontend/commit/e214b13984d81d57651661762fb352f8393e29bc))
+
+### ♻️ REFACTORING
+
+* 백엔드 변환에 맞춰 전체 코드 리팩토링 ([18f4083](https://github.com/startup-life/nest-frontend/commit/18f4083baee2ab978049f7db741a521960d5f8de))
+
 ## 1.0.0 (2024-08-27)
 
 ### 🚀 NEW FEATURES
