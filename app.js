@@ -1,10 +1,13 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import dotenv from 'dotenv';
 
 const app = express();
 
-const PORT = 8080;
+dotenv.config({ path: './.env.dev' });
+
+const PORT = process.env.PORT;
 
 // 현재 파일의 URL에서 디렉토리 경로를 추출
 const __filename = fileURLToPath(import.meta.url);

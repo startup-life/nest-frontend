@@ -1,46 +1,36 @@
 import { getServerUrl } from '../utils/function.js';
 
 export const userSignup = async (data) => {
-    const result = await fetch(`${getServerUrl()}/users/signup`, {
+    return fetch(`${getServerUrl()}/auth/signup`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
     });
-    return result;
 };
 
 export const checkEmail = async (email) => {
-    const result = await fetch(
-        `${getServerUrl()}/users/email/check?email=${email}`,
-        {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }
-    );
-    return result;
+    return fetch(`${getServerUrl()}/user/check/email?email=${email}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
 };
 
 export const checkNickname = async (nickname) => {
-    const result = await fetch(
-        `${getServerUrl()}/users/nickname/check?nickname=${nickname}`,
-        {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        }
-    );
-    return result;
+    return fetch(`${getServerUrl()}/user/check/nickname?nickname=${nickname}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
 };
 
 export const fileUpload = async (file) => {
-    const result = await fetch(`${getServerUrl()}/upload`, {
+    return fetch(`${getServerUrl()}/upload/profile`, {
         method: 'POST',
         body: file,
     });
-    return result;
 };

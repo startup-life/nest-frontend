@@ -26,6 +26,7 @@ const getBoardItem = async (offset = 0, limit = 5) => {
 
 const setBoardItem = (boardData) => {
     const boardList = document.querySelector('.boardList');
+    console.log(boardData);
     if (boardList && boardData) {
         const itemsHtml = boardData
             .map((data) =>

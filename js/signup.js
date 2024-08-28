@@ -15,7 +15,6 @@ import {
 } from '../api/signupRequest.js';
 
 const MAX_PASSWORD_LENGTH = 20;
-const HTTP_OK = 200;
 const HTTP_CREATED = 201;
 
 const signupData = {
@@ -48,11 +47,8 @@ const sendSignupData = async () => {
     // signupData를 서버로 전송
     const response = await userSignup(props);
 
-    // 서버로부터 응답을 받음
-    const result = await response.json();
-
     // 응답이 성공적으로 왔을 경우
-    if (result.status == HTTP_CREATED) {
+    if (response.status === HTTP_CREATED) {
         localStorage.removeItem('profilePath');
         location.href = '/html/login.html';
     } else {
@@ -76,7 +72,7 @@ const changeEventHandler = async (event, uid) => {
         const helperElement = document.querySelector(
             `.inputBox p[name="${uid}"]`
         );
-        helperElement.textContent = '';
+        if (helperElement) helperElement.textContent = '';
     }
     observeSignupData();
 };
@@ -100,7 +96,7 @@ const inputEventHandler = async (event, uid) => {
         } else {
             const response = await checkEmail(value);
             const responseData = await response.json();
-            if (responseData.status === HTTP_OK) {
+            if (responseData === false) {
                 helperElement.textContent = '';
                 isComplete = true;
             } else {
@@ -173,7 +169,7 @@ const inputEventHandler = async (event, uid) => {
             const response = await checkNickname(value);
             const responseData = await response.json();
 
-            if (responseData.status == HTTP_OK) {
+            if (responseData === false) {
                 helperElement.textContent = '';
                 isComplete = true;
             } else {
@@ -238,15 +234,15 @@ const uploadProfileImage = () => {
             }
 
             const formData = new FormData();
-            formData.append('attachFile', file);
+            formData.append('profileImage', file);
 
             // 파일 업로드를 위한 POST 요청 실행
             try {
                 const response = await fileUpload(formData);
                 if (!response.ok) throw new Error('서버 응답 오류');
 
-                const responseData = await response.json();
-                localStorage.setItem('profilePath', responseData.data.filePath);
+                const responseData = await response.text();
+                localStorage.setItem('profilePath', responseData);
             } catch (error) {
                 console.error('업로드 중 오류 발생:', error);
             }

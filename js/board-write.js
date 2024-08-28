@@ -1,10 +1,10 @@
 import Dialog from '../component/dialog/dialog.js';
 import Header from '../component/header/header.js';
 import {
-    authCheck,
     getQueryString,
     getServerUrl,
     prependChild,
+    serverSessionCheck,
 } from '../utils/function.js';
 import {
     createPost,
@@ -13,6 +13,7 @@ import {
     updatePost,
 } from '../api/board-writeRequest.js';
 
+const HTTP_OK = 200;
 const HTTP_CREATED = 201;
 
 const MAX_TITLE_LENGTH = 26;
@@ -90,7 +91,7 @@ const addBoard = async () => {
         const response = await updatePost(post_id, setData);
         if (!response.ok) throw new Error('서버 응답 오류');
 
-        if (response.status === HTTP_CREATED) {
+        if (response.status === HTTP_OK) {
             localStorage.removeItem('postFilePath');
             window.location.href = `/html/board.html?id=${post_id}`;
         } else {
@@ -99,10 +100,12 @@ const addBoard = async () => {
     }
 };
 const changeEventHandler = async (event, uid) => {
-    if (uid == 'title') {
+    if (uid === 'title') {
         const value = event.target.value;
         const helperElement = contentHelpElement;
-        if (!value || value == '') {
+
+        /*
+        if (!value || value === '') {
             boardWrite[uid] = '';
             helperElement.textContent = '제목을 입력해주세요.';
         } else if (value.length > MAX_TITLE_LENGTH) {
@@ -113,19 +116,56 @@ const changeEventHandler = async (event, uid) => {
             boardWrite[uid] = value;
             helperElement.textContent = '';
         }
+        */
+        if (!value || value === '') {
+            boardWrite[uid] = '';
+            if (helperElement) {
+                // 요소가 있을 때만 속성을 설정
+                helperElement.textContent = '제목을 입력해주세요.';
+                helperElement.style.display = 'block';
+            }
+        } else if (value.length > MAX_TITLE_LENGTH) {
+            if (helperElement) {
+                // 요소가 있을 때만 속성을 설정
+                helperElement.textContent = '제목은 26자 이하로 입력해주세요.';
+                helperElement.style.display = 'block';
+            }
+            titleInput.value = value.substring(0, MAX_TITLE_LENGTH);
+            boardWrite[uid] = value.substring(0, MAX_TITLE_LENGTH);
+        } else {
+            boardWrite[uid] = value;
+            if (helperElement) {
+                // 요소가 있을 때만 속성을 설정
+                helperElement.textContent = '';
+                helperElement.style.display = 'none';
+            }
+        }
     } else if (uid == 'content') {
         const value = event.target.value;
         const helperElement = contentHelpElement;
         if (!value || value == '') {
             boardWrite[uid] = '';
-            helperElement.textContent = '내용을 입력해주세요.';
+            if (helperElement) {
+                // 요소가 있을 때만 속성을 설정
+                helperElement.textContent = '내용을 입력해주세요.';
+                helperElement.style.display = 'block';
+            }
         } else if (value.length > MAX_CONTENT_LENGTH) {
-            helperElement.textContent = '내용은 1500자 이하로 입력해주세요.';
+            if (helperElement) {
+                // 요소가 있을 때만 속성을 설정
+                helperElement.textContent =
+                    '내용은 1500자 이하로 입력해주세요.';
+                helperElement.style.display = 'block';
+            }
             contentInput.value = value.substring(0, MAX_CONTENT_LENGTH);
             boardWrite[uid] = value.substring(0, MAX_CONTENT_LENGTH);
         } else {
             boardWrite[uid] = value;
-            helperElement.textContent = '';
+            if (helperElement) {
+                // 요소가 있을 때만 속성을 설정
+                helperElement.textContent = '';
+                helperElement.style.display = 'none';
+            }
         }
     } else if (uid == 'image') {
         const file = event.target.files[0]; // 사용자가 선택한 파일
@@ -158,9 +198,7 @@ const changeEventHandler = async (event, uid) => {
 const getBoardModifyData = async (postId) => {
     const response = await getBoardItem(postId);
     if (!response.ok) throw new Error('서버 응답 오류');
-
-    const data = await response.json();
-    return data.data;
+    return response.json();
 };
 
 // 수정 모드인지 확인
@@ -193,17 +231,17 @@ const setModifyData = (data) => {
     titleInput.value = data.postTitle;
     contentInput.value = data.postContent;
 
-    if (data.attachFilePath) {
+    if (data.filePath) {
         // filePath에서 파일 이름만 추출하여 표시
-        const fileName = data.attachFilePath.split('/').pop();
+        const fileName = data.filePath.split('/').pop();
         imagePreviewText.innerHTML = `${fileName}<span class="deleteFile">X</span>`;
         imagePreviewText.style.display = 'block';
-        localStorage.setItem('postFilePath', data.attachFilePath);
+        localStorage.setItem('postFilePath', data.filePath);
 
         // 이제 추출된 파일명을 사용하여 File 객체를 생성
         const attachFile = new File(
             // 실제 이미지 데이터 대신 URL을 사용
-            [`${getServerUrl()}${data.attachFilePath}`],
+            [`${getServerUrl()}${data.filePath}`],
             // 추출된 파일명
             fileName,
             // MIME 타입 지정, 실제 이미지 타입에 맞게 조정 필요
@@ -225,7 +263,8 @@ const setModifyData = (data) => {
 };
 
 const init = async () => {
-    const data = await authCheck();
+    const response = await serverSessionCheck();
+    const data = await response.json();
     const modifyId = checkModifyMode();
 
     const profileImage =
@@ -234,12 +273,10 @@ const init = async () => {
             : `${getServerUrl()}${data.profileImagePath}`;
 
     prependChild(document.body, Header('커뮤니티', 1, profileImage));
-
     if (modifyId) {
         isModifyMode = true;
         modifyData = await getBoardModifyData(modifyId);
-
-        if (data.idx !== modifyData.writerId) {
+        if (data.userId !== modifyData.userId) {
             Dialog('권한 없음', '권한이 없습니다.', () => {
                 window.location.href = '/';
             });
