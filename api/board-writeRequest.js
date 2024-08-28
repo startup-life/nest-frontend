@@ -14,7 +14,7 @@ export const createPost = (boardData) => {
 
 export const updatePost = (postId, boardData) => {
     const result = fetch(`${getServerUrl()}/post/${postId}`, {
-        method: 'PATCH',
+        method: 'PUT',
         body: JSON.stringify(boardData),
         headers: {
             'Content-Type': 'application/json',
@@ -38,8 +38,7 @@ export const getBoardItem = (postId) => {
     const result = fetch(`${getServerUrl()}/post/${postId}`, {
         method: 'GET',
         headers: {
-            session: getCookie('session'),
-            userid: getCookie('userId'),
+            Authorization: `Bearer ${getCookie('accessToken')}`,
         },
         noCORS: true,
     });

@@ -14,16 +14,35 @@ const button = document.querySelector('#signupBtn');
 const DEFAULT_PROFILE_IMAGE = '/image/profile/default.jpg';
 const HTTP_OK = 200;
 
-const data = authCheck();
-const userId = data.userId;
-const profileImage =
-    data.profileImagePath === undefined
-        ? `${getServerUrl()}${DEFAULT_PROFILE_IMAGE}`
-        : `${getServerUrl()}${data.profileImagePath}`;
+// const data = await authCheck();
+// const userId = data.userId;
+// const profileImage =
+//     data.profileImagePath === undefined
+//         ? `${getServerUrl()}${DEFAULT_PROFILE_IMAGE}`
+//         : `${getServerUrl()}${data.profileImagePath}`;
+let userId; // 전역 변수로 userId를 선언합니다.
+let profileImage; // 전역 변수로 profileImage를 선언합니다.
 
 const modifyData = {
     password: '',
     passwordCheck: '',
+};
+
+// authCheck의 결과로 초기 데이터 설정
+const initializeAuthData = () => {
+    authCheck()
+        .then((data) => {
+            userId = data.userId;
+            profileImage =
+                data.profileImagePath === undefined
+                    ? `${getServerUrl()}${DEFAULT_PROFILE_IMAGE}`
+                    : `${getServerUrl()}${data.profileImagePath}`;
+
+            init(); // 초기화 함수 호출
+        })
+        .catch((error) => {
+            console.error('인증 데이터 초기화 중 오류 발생:', error);
+        });
 };
 
 const observeData = () => {
@@ -118,4 +137,5 @@ const init = () => {
     observeData();
 };
 
+initializeAuthData();
 init();

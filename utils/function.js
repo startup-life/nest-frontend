@@ -45,6 +45,11 @@ export const serverSessionCheck = async () => {
                 Authorization: `Bearer ${getCookie('accessToken')}`,
             },
         });
+
+        if (response.status !== HTTP_OK) {
+            deleteCookie('accessToken');
+            location.href = '/html/login.html';
+        }
         return response;
     } catch (error) {
         console.error(error);
@@ -62,13 +67,13 @@ export const authCheck = async () => {
         }
 
         const response = await serverSessionCheck();
-        const data = await response.json();
 
         if (!response || response.status !== HTTP_OK) {
             deleteCookie('accessToken');
             location.href = '/html/login.html';
         }
-        return data;
+
+        return await response.json();
     } catch (error) {
         console.error(error);
         deleteCookie('accessToken');
