@@ -4,15 +4,15 @@ import Header from '../component/header/header.js';
 import {
     authCheck,
     getServerUrl,
-    prependChild,
     padTo2Digits,
+    prependChild,
     serverSessionCheck,
 } from '../utils/function.js';
 import {
-    getPost,
     deletePost,
-    writeComment,
     getComments,
+    getPost,
+    writeComment,
 } from '../api/boardRequest.js';
 
 const DEFAULT_PROFILE_IMAGE = '/image/profile/default.jpg';
@@ -32,8 +32,7 @@ const getBoardDetail = async (postId) => {
     if (!response.ok || response.status !== HTTP_OK)
         return new Error('게시글 정보를 가져오는데 실패하였습니다.');
 
-    const data = await response.json();
-    return data;
+    return response.json();
 };
 
 const setBoardDetail = (data) => {
@@ -47,7 +46,7 @@ const setBoardDetail = (data) => {
     const date = new Date(data.createdAt);
     const formattedDate = `${date.getFullYear()}-${padTo2Digits(date.getMonth() + 1)}-${padTo2Digits(date.getDate())} ${padTo2Digits(date.getHours())}:${padTo2Digits(date.getMinutes())}:${padTo2Digits(date.getSeconds())}`;
     createdAtElement.textContent = formattedDate;
-
+    console.log(data);
     imgElement.src =
         data.profileImagePath === undefined || data.profileImagePath === null
             ? `${getServerUrl()}${DEFAULT_PROFILE_IMAGE}`
@@ -57,10 +56,9 @@ const setBoardDetail = (data) => {
 
     // 바디 정보
     const contentImgElement = document.querySelector('.contentImg');
-    if (data.attachFilePath) {
-        console.log(data.attachFilePath);
+    if (data.filePath) {
         const img = document.createElement('img');
-        img.src = `${getServerUrl()}${data.attachFilePath}`;
+        img.src = `${getServerUrl()}${data.filePath}`;
         contentImgElement.appendChild(img);
     }
     const contentElement = document.querySelector('.content');
@@ -109,17 +107,19 @@ const setBoardModify = async (data, myInfo) => {
 
         const modifyBtnElement2 = document.querySelector('#modifyBtn');
         modifyBtnElement2.addEventListener('click', () => {
-            window.location.href = `/html/board-modify.html?post_id=${data.post_id}`;
+            window.location.href = `/html/board-modify.html?post_id=${data.postId}`;
         });
     }
 };
 
 const getBoardComment = async (id) => {
     const response = await getComments(id);
-    if (!response.ok) return [];
+    if (!response.ok || response.status !== HTTP_OK) return [];
+
     const data = await response.json();
-    if (data.status != HTTP_OK) return [];
-    return data.data;
+    if (data || data !== null) {
+        return data;
+    }
 };
 
 const setBoardComment = (data, myInfo) => {
@@ -129,8 +129,8 @@ const setBoardComment = (data, myInfo) => {
             const item = CommentItem(
                 event,
                 myInfo.userId,
-                event.post_id,
-                event.comment_id
+                event.postId,
+                event.commentId
             );
             commentListElement.appendChild(item);
         });

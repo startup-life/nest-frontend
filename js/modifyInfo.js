@@ -21,16 +21,35 @@ const nicknameHelpElement = document.querySelector(
 // const resultElement = document.querySelector('.inputBox p[name="result"]');
 const modifyBtnElement = document.querySelector('#signupBtn');
 const profilePreview = document.querySelector('#profilePreview');
-const authData = authCheck();
+// const authData = await authCheck();
+// const changeData = {
+//     nickname: authData.nickname,
+//     profileImagePath: authData.profileImagePath,
+// };
+let authData; // 전역 변수로 선언하여 여러 곳에서 사용할 수 있게 함
 const changeData = {
-    nickname: authData.nickname,
-    profileImagePath: authData.profileImagePath,
+    nickname: '',
+    profileImagePath: '',
 };
 
 const DEFAULT_PROFILE_IMAGE = '/image/profile/default.jpg';
 const HTTP_OK = 200;
 const HTTP_CREATED = 201;
 const HTTP_END = 204;
+
+// authData 초기화 함수
+const initializeAuthData = () => {
+    return authCheck()
+        .then((data) => {
+            authData = data; // Promise의 결과를 전역 변수에 할당
+            changeData.nickname = authData.nickname;
+            changeData.profileImagePath = authData.profileImagePath;
+            init(); // 모든 초기화 작업을 init()에서 수행
+        })
+        .catch((error) => {
+            console.error('인증 데이터 초기화 중 오류 발생:', error);
+        });
+};
 
 const setData = (data) => {
     if (
@@ -40,7 +59,7 @@ const setData = (data) => {
         profilePreview.src = `${getServerUrl()}${DEFAULT_PROFILE_IMAGE}`;
     } else {
         profilePreview.src = `${getServerUrl()}${data.profileImagePath}`;
-
+        console.log(data);
         const profileImagePath = data.profileImagePath;
         const fileName = profileImagePath.split('/').pop();
         localStorage.setItem('profilePath', data.profileImagePath);
@@ -251,7 +270,6 @@ const init = () => {
         authData.profileImagePath === undefined
             ? `${getServerUrl()}${DEFAULT_PROFILE_IMAGE}`
             : `${getServerUrl()}${authData.profileImagePath}`;
-
     prependChild(document.body, Header('커뮤니티', 2, profileImage));
     setData(authData);
     observeData();
@@ -259,4 +277,5 @@ const init = () => {
     displayToastFromStorage();
 };
 
+initializeAuthData();
 init();
