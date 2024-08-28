@@ -3,7 +3,7 @@ import Dialog from '../dialog/dialog.js';
 import { deleteComment, updateComment } from '../../api/commentRequest.js';
 
 const DEFAULT_PROFILE_IMAGE = '/image/profile/default.jpg';
-const HTTP_CREATED = 201;
+const HTTP_OK = 200;
 const HTTP_END = 204;
 
 const CommentItem = (data, writerId, postId, commentId) => {
@@ -62,7 +62,7 @@ const CommentItem = (data, writerId, postId, commentId) => {
             };
 
             const response = await updateComment(postId, commentId, sendData);
-            if (!response.ok || response.status !== HTTP_CREATED)
+            if (!response.ok || response.status !== HTTP_OK)
                 return Dialog('수정 실패', '댓글 수정에 실패하였습니다.');
 
             location.href = `/html/board.html?id=${postId}`;
@@ -95,7 +95,7 @@ const CommentItem = (data, writerId, postId, commentId) => {
     const img = document.createElement('img');
     img.className = 'commentImg';
     img.src =
-        `${getServerUrl()}${data.profileImage}` ||
+        `${getServerUrl()}${data.profileImagePath}` ||
         `${getServerUrl()}${DEFAULT_PROFILE_IMAGE}`;
     picture.appendChild(img);
 
@@ -109,12 +109,11 @@ const CommentItem = (data, writerId, postId, commentId) => {
     infoDiv.appendChild(h3);
 
     const h4 = document.createElement('h4');
-    const date = new Date(data.created_at);
-    const formattedDate = `${date.getFullYear()}-${padTo2Digits(date.getMonth() + 1)}-${padTo2Digits(date.getDate())} ${padTo2Digits(date.getHours())}:${padTo2Digits(date.getMinutes())}:${padTo2Digits(date.getSeconds())}`;
-    h4.textContent = formattedDate;
+    const date = new Date(data.createdAt);
+    h4.textContent = `${date.getFullYear()}-${padTo2Digits(date.getMonth() + 1)}-${padTo2Digits(date.getDate())} ${padTo2Digits(date.getHours())}:${padTo2Digits(date.getMinutes())}:${padTo2Digits(date.getSeconds())}`;
     infoDiv.appendChild(h4);
 
-    if (parseInt(data.user_id, 10) === parseInt(writerId, 10)) {
+    if (parseInt(data.userId, 10) === parseInt(writerId, 10)) {
         const buttonWrap = document.createElement('span');
 
         const deleteButton = document.createElement('button');
@@ -131,7 +130,7 @@ const CommentItem = (data, writerId, postId, commentId) => {
     }
 
     const p = document.createElement('p');
-    p.innerHTML = data.comment_content.replace(/(?:\r\n|\r|\n)/g, '<br>');
+    p.innerHTML = data.commentContent.replace(/(?:\r\n|\r|\n)/g, '<br>');
 
     commentInfoWrap.appendChild(infoDiv);
     commentInfoWrap.appendChild(p);
