@@ -1,13 +1,17 @@
 import express from 'express';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import https from 'https';
+import fs from 'fs';
 import dotenv from 'dotenv';
+
+dotenv.config();
 
 const app = express();
 
-dotenv.config({ path: './.env.dev' });
-
-const PORT = process.env.PORT;
+const port = process.env.PORT;
+const httpsKeyPath = process.env.HTTPS_KEY_PATH;
+const httpsCertPath = process.env.HTTPS_CERT_PATH;
 
 // 현재 파일의 URL에서 디렉토리 경로를 추출
 const __filename = fileURLToPath(import.meta.url);
@@ -19,12 +23,17 @@ app.get('/', (req, res) => {
     res.redirect('/html/index.html');
 });
 
-// 서버 최초 시작시 모든 쿠키  삭제
-app.use((req, res, next) => {
-    res.clearCookie('accessToken');
-    next();
-});
+if (process.env.NODE_ENV === 'production') {
+    const httpsOptions = {
+        key: fs.readFileSync(httpsKeyPath),
+        cert: fs.readFileSync(httpsCertPath),
+    };
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+    https.createServer(httpsOptions, app).listen(port, () => {
+        console.log(`HTTPS Server is running on port ${port}`);
+    });
+} else {
+    app.listen(port, () => {
+        console.log(`HTTP Server is running on port ${port}`);
+    });
+}
