@@ -4,7 +4,7 @@ export const getServerUrl = () => {
     const host = window.location.hostname;
     return host.includes('localhost')
         ? 'http://localhost:3000'
-        : 'https://nest.startupcode.kr:443';
+        : 'https://nest-api.startupcode.kr:443';
 };
 
 export const setCookie = (cookie_name, value, days) => {
